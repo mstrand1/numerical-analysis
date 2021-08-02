@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='NumericalAnalysis',
@@ -6,7 +6,7 @@ setup(
     packages=['numan'],
     author='mstrand',
     author_email='mwstrand@uci.edu',
-    description=open('README.md').read(),
+    description=open('README.rst').read(),
     install_requires=['numpy'],
     url='https://github.com/mwstrand/numerical-analysis'
 )
