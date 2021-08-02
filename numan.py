@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class NumericalAnalysis:
     def __init__(self, func=None):
         self.func = func
