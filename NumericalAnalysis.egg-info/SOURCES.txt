@@ -1,0 +1,10 @@
+MANIFEST.in
+README.rst
+setup.py
+NumericalAnalysis.egg-info/PKG-INFO
+NumericalAnalysis.egg-info/SOURCES.txt
+NumericalAnalysis.egg-info/dependency_links.txt
+NumericalAnalysis.egg-info/requires.txt
+NumericalAnalysis.egg-info/top_level.txt
+numan/__init__.py
+numan/numan.py
