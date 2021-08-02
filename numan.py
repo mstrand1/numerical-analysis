@@ -446,58 +446,14 @@ class NumericalAnalysis:
         a = np.zeros(n+2)
         a[1] = (1/np.pi) * NumericalAnalysis(bp).simp_comp(0, np.pi, 50)
         for i in range(1, n+1):
-            g = lambda x: (f(np.cos(x))*np.cos(i*x))
+            g = lambda x: (f(np.cos(x)) * np.cos(i*x))
             a[i+1] = (2/np.pi) * NumericalAnalysis(g).simp_comp(0, np.pi, 50)
         return a[1:n+2]
 
     def chebyshev(self, approx, n=4):
-        c = self.cheby_ceoff(n)
+        c = self.cheby_coeff(n)
         p = 0
         for i in range(n+1):
             t = lambda a: np.cos(i * np.arccos(a))
             p += c[i] * t(approx)
         return p
-
-
-ap = np.array([[np.pi, -np.sqrt(2), -1, 1, 0], [np.exp(1), -1, 1, 2, 1], [1, 1, -np.sqrt(3), 1, 2], [-1, -1, 1, -np.sqrt(5), 3]])
-
-a = np.array([[2, -1, 1], [2, 2, 2], [-1, -1, 2]])
-b = np.array([[-1], [4], [-5]])
-
-a2 = np.array([[1, 2, -2], [1, 1, 1], [2, 2, 1]])
-b2 = np.array([[7], [2], [5]])
-
-a_s = np.array([[4, -1, 0], [-1, 4, -1], [0, -1, 4]])
-b_s = np.array([[-1], [4], [-5]])
-
-t = np.array([[1, 5, -6], [6, -7, 4], [1, 2, 7]])
-wt = 16*(1-np.sqrt(7/8))
-
-# f = lambda a: np.cos(2*a)*np.exp(-a)
-# x = np.linspace(1, 2.9, 30)
-# xcs = [-2.4061, -1.0830, -0.6440, -0.4068, -0.2448, -0.1158, 0, 0.1158, 0.2448, 0.4068, 0.6440, 1.0830, 2.4061]
-# xi = 2.22
-# approxcs = -0.024
-
-f = lambda a: np.exp(a)
-w = lambda x: 1/np.sqrt(1-x**2)
-
-y = NumericalAnalysis(f)
-print(y.chebapp(0.41, n=8))
-
-
-# print(y.aquad(a=1, b=2*np.pi, n_0=100))
-# print(y.simpadpt(0, 2*np.pi, tol=0.5*(10**(-4)), n_0=20))
-
-# t = y.cspline(xcs, approxcs)
-# print(abs(t - f(approxcs)))
-# a,b,c,d = y.cscoeff(xcs)
-# print("a: ", a)
-# print()
-# print("b: ", b)
-# print()
-# print("c: ", c)
-# print()
-# print("d: ", d)
-# print(y.SOR(a_s, b_s, tol=10**(-5), n_0 = 30, w=(0.5*wt)))
-
