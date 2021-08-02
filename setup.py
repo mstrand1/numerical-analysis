@@ -1,4 +1,3 @@
-import numpy as np
 from distutils.core import setup
 
 setup(
@@ -8,5 +7,6 @@ setup(
     author='mstrand',
     author_email='mwstrand@uci.edu',
     description=open('README.md').read(),
-    install_requires=['numpy']
+    install_requires=['numpy'],
+    url='https://github.com/mwstrand/numerical-analysis'
 )
