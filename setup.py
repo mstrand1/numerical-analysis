@@ -14,5 +14,6 @@ setup(
     long_description='Numerical Analysis Algorithms from class.',
     long_description_content_type='text/markdown',
     install_requires=['numpy'],
+    setup_requires=['numpy'],
     url='https://github.com/mwstrand/numerical-analysis'
 )
