@@ -9,10 +9,10 @@ setup(
     version='0.1',
     packages=find_packages(where='src'),
     author='mstrand',
+    python_requires='>=3.6, <4',
     author_email='mwstrand@uci.edu',
-    long_description=long_description,
+    long_description='Numerical Analysis Algorithms from class.',
     long_description_content_type='text/markdown',
     install_requires=['numpy'],
-    python_requires='3.8',
     url='https://github.com/mwstrand/numerical-analysis'
 )

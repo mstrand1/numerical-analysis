@@ -1,0 +1,8 @@
+MANIFEST.in
+README.md
+setup.py
+numan.egg-info/PKG-INFO
+numan.egg-info/SOURCES.txt
+numan.egg-info/dependency_links.txt
+numan.egg-info/requires.txt
+numan.egg-info/top_level.txt
