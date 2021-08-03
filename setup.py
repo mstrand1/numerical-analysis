@@ -6,7 +6,8 @@ setup(
     packages=['numan'],
     author='mstrand',
     author_email='mwstrand@uci.edu',
-    description=open('README.rst').read(),
+    long_description ='Numerical Analysis Algorithms from class.',
+    long_description_content_type='text/x-rst',
     install_requires=['numpy'],
     url='https://github.com/mwstrand/numerical-analysis'
 )
