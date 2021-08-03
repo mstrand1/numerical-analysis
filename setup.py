@@ -5,7 +5,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
-    name='numan',
+    name='nanalysis',
     version='0.1',
     packages=find_packages(where='src'),
     author='mstrand',

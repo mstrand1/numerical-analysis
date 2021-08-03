@@ -11,5 +11,4 @@ The algorithms include the following techniques:
 - Numerical differentiation and integration
 - Solving linear systems
 
-
 **IMPORTANT:** If you want to use this code, please use discretion. All of these techniques require certain theoretical conditions be fulfilled, as they make several critical assumptions about the input parameters. I may update this repo with guidelines, but in the meantime it's recommended to refer to the Burden-Faires text for proper usage.
