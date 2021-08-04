@@ -3,16 +3,6 @@ import numpy as np
 
 class LinSys:
     def gauss_elim(self, a):
-        """
-        Gaussian Elimination: Solves a system Ax = b using gaussian elimination with
-        back substitution.
-
-        Args:
-            a (ndarry): Augmented (n x n+1) 2D array. Last column is b.
-
-        Returns:
-            ndarry: 1D solutions array (x).
-        """
         n = len(a)
         x = np.zeros(n)
         back_sum = 0
@@ -44,15 +34,6 @@ class LinSys:
         return x
 
     def rref(self, a):
-        """
-        Transforms a matrix into its reduced row echelon form.
-
-        Args:
-            a (ndarry): Augmented (n x n) 2D array. Last column is b.
-
-        Returns:
-            ndarry: 1D solutions array (x).
-        """
         a = np.array(a)
         n = len(a)
         for i in range(n):
@@ -79,45 +60,15 @@ class LinSys:
         return a.round(5)
 
     def aug(self, a):
-        """
-        Augments a matrix with the identity matrix.
-
-        Args:
-            a (ndarry): Augmented (n x n) 2D array.
-
-        Returns:
-            ndarry: 2D (n x n+n) array.
-        """
         return np.append(a, np.identity(len(a)), axis=1)
 
     def inv_matrix(self, a):
-        """
-        Calculates the inverse of a matrix A through row reduction of [A : I].
-
-        Args:
-            a (ndarry): Augmented (n x n) 2D array.
-
-        Returns:
-            ndarry: Columns n+1:2n of [I : A^-1].
-        """
         n = len(a)
         inv = self.rref(self.aug(a))
         return inv[:, n:2 * n]
 
-    def jacobi(self, a, b, x_0=None, tol=10**(-7), n_0=15):
-        """
-        Jacobi iterative method for solving a nxn linear system Ax = b.
-
-        Args:
-            a (ndarry): A - (n x n) 2D array.
-            b (ndarry): b - (n x 1) 2D array.
-            x_0 (ndarry): Initial approximation vector
-            tol (float): Error tolerance
-            n_0 (int): Max iterations
-
-        Returns:
-            ndarry: 1D solutions solution array (x).
-        """
+    @staticmethod
+    def jacobi(self, a, b, x_0=None, tol=10 ** (-7), n_0=15):
         n = len(a)
         if not x_0:
             x_0 = np.zeros(n)
@@ -139,20 +90,8 @@ class LinSys:
         print("Max iterations", n_0, " exceeded")
         return None
 
-    def gauss_seidel(self, a, b, x_0=None, tol=10**(-7), n_0=15):
-        """
-        Gauss-Seidel iterative technique for solving a nxn linear system Ax = b.
-
-        Args:
-            a (ndarry): A - (n x n) 2D array.
-            b (ndarry): b - (n x 1) 2D array.
-            x_0 (ndarry): Initial approximation vector
-            tol (float): Error tolerance
-            n_0 (int): Max iterations
-
-        Returns:
-            ndarry: 1D solutions solution array (x).
-        """
+    @staticmethod
+    def gauss_seidel(self, a, b, x_0=None, tol=10 ** (-7), n_0=15):
         n = len(a)
         if not x_0:
             x_0 = np.zeros(n)
@@ -177,25 +116,8 @@ class LinSys:
         print("Max iterations", n_0, " exceeded.")
         return None
 
-    def SOR(self, a, b, x_0=None, tol=10**(-5), n_0=25, w=1.00):
-        """
-        Successive Over-Relaxation (SOR) method for solving a nxn linear system Ax = b.
-
-        !~~~~~~~~~~~~~~~~~!
-        *** IN PROGRESS ***
-        !~~~~~~~~~~~~~~~~~!
-
-        Args:
-            a (ndarry): A - (n x n) 2D array.
-            b (ndarry): b - (n x 1) 2D array.
-            x_0 (ndarry): Initial approximation vector
-            tol (float): Error tolerance
-            n_0 (int): Max iterations
-            w (float): Weight. 1 < w for accelerated convergence.
-
-        Returns:
-            ndarry: 1D solutions solution array (x).
-        """
+    # somethings wrong
+    def SOR(self, a, b, x_0=None, tol=10 ** (-5), n_0=25, w=1.00):
         n = len(a)
         if not x_0:
             x_0 = np.zeros(n)

@@ -6,9 +6,9 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='nanalysis',
-    version='1.2',
+    version='1.41',
     packages=['nanalysis'],
-    author='mstrand',
+    author='Michael Strand',
     author_email='mwstrand@uci.edu',
     long_description='Numerical Analysis Algorithms from class.',
     long_description_content_type='text/markdown',

@@ -1,0 +1,15 @@
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+nanalysis/__init__.py
+nanalysis/find_roots.py
+nanalysis/interpolation.py
+nanalysis/lin_systems.py
+nanalysis/num_methods.py
+nanalysis.egg-info/PKG-INFO
+nanalysis.egg-info/SOURCES.txt
+nanalysis.egg-info/dependency_links.txt
+nanalysis.egg-info/requires.txt
+nanalysis.egg-info/top_level.txt
