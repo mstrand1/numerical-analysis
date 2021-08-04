@@ -2,6 +2,10 @@ import numpy as np
 
 
 class LinSys:
+    """
+    Methods for solving linear systems of the form Ax=b.
+    """
+
     def gauss_elim(self, a):
         """
         Gaussian Elimination: Solves a system Ax = b using gaussian elimination with
