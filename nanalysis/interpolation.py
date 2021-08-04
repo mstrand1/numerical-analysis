@@ -93,12 +93,14 @@ class Interpolation:
             hp += d * hdd[i, i]
         return hp
 
-    def spline_coeff(self, x):
+    def spline_coeff(self, x, y=None):
         n = len(x)
         a = np.zeros(n)
-        for i in range(n):
-            a[i] = self.func(x[i])
-        n = len(x)
+        if not y:
+            for i in range(n):
+                a[i] = self.func(x[i])
+        elif y:
+            a = y
         h = np.zeros(n)
         alph = h.copy()
         mu = h.copy()
@@ -125,7 +127,7 @@ class Interpolation:
             c[j] = z[j] - mu[j] * c[j+1]
             b[j] = ((a[j+1] - a[j]) / h[j]) - (h[j] * (c[j+1] + 2*c[j])/3)
             d[j] = (c[j+1] - c[j]) / (3*h[j])
-        a = a[:n]
+        a = a[:n-1]
         b = b[:n-1]
         c = c[:n-1]
         d = d[:n-1]
