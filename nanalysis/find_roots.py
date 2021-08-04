@@ -8,7 +8,6 @@ class FindRoot:
 
     def __init__(self, func=None):
         """
-
         func (function): Function f(x).
         """
         self.func = func

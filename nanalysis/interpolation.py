@@ -7,6 +7,7 @@ class Interpolation:
     Methods of approximation by different polynomial interpolants using either a known f(x)
     or a set of x,y values.
     """
+
     def __init__(self, func=None):
         self.func = func
 
