@@ -11,8 +11,12 @@ class Interpolation:
     def __init__(self, func=None):
         self.func = func
 
-    def lagrange(self, x, approx):
+    def lagrange(self, x, y=None, approx=None):
         n = len(x)
+        if not y:
+            y = np.zeros(n)
+            for i in range(n):
+                y[i] = self.func(x[i])
         interp = 0
         l = np.zeros(n)
         for i in range(n):
@@ -20,7 +24,7 @@ class Interpolation:
             for k in range(n):
                 if k != i:
                     l[i] *= (approx - x[k]) / (x[i] - x[k])
-            interp += self.func(x[i]) * l[i]
+            interp += y[i] * l[i]
         return interp
 
     def dd_lagrange(self, x, approx):
@@ -34,25 +38,43 @@ class Interpolation:
             interp += d * dd[i, i]
         return interp
 
-    def div_diff(self, x):
+    def div_diff(self, x, y=None):
+        """
+          Obtains Newton's divided-difference coefficients for the interpolating polynomial.
+
+          Args:
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
+
+          Returns:
+              ndarray: 2D (n x n) array of divided-difference coefficients. ith column represents
+              i-1th divided differences.
+          """
         n = len(x)
         dd = np.zeros((n, n))
-        dd[:, 0] = np.transpose(self.func(x))
+        if not y:
+            dd[:, 0] = np.transpose(self.func(x))
+        elif y:
+            dd[:, 0] = np.transpose(y)
         for i in range(n-1):
             for j in range(i+1):
                 dd[i+1, j+1] = (dd[i+1, j] - dd[i, j]) / (x[i+1] - x[i-j])
         return dd
 
-    def hdiv_diff(self, x):
+    def hdiv_diff(self, x, y=None, yp=None):
         n = len(x)
         z = np.zeros((2*n))
         q = np.zeros((2*n, 2*n))
+        if not y and not yp:
+            for i in range(n):
+                y[i] = self.func(x[i])
+                yp[i] = NumMethods(self.func).mid_diff(x[i])
         for i in range(n):
             z[2*i] = x[i]
             z[2*i+1] = x[i]
-            q[2*i, 0] = self.func(x[i])
-            q[2*i+1, 0] = self.func(x[i])
-            q[2*i+1, 1] = NumMethods(self.func).mid_diff(x[i])
+            q[2*i, 0] = y[i]
+            q[2*i+1, 0] = y[i]
+            q[2*i+1, 1] = yp[i]
             if i != 0:
                 q[2*i, 1] = (q[2*i, 0] - q[2*i-1, 0]) / (z[2*i]-z[2*i-1])
         for i in range(2, 2*n):
