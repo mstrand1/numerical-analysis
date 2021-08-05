@@ -2,13 +2,50 @@ import numpy as np
 
 
 class NumMethods:
+    """
+    Methods of numerical differentiation and integration.
+    """
     def __init__(self, func=None):
         self.func = func
 
     def for_diff(self, x, h=10**(-5)):
+        """
+          Forward Differences: Approximates f'(x) using (f(x+h)-f(x))/h for very small h.
+
+          Args:
+              x (float): Approximation point
+              h (float): Increment
+
+          Returns:
+              float: f'(x) approximation
+          """
         return (self.func(x + h) - self.func(x))/h
 
-    def mid_diff(self, x, h=10**(-5)):
+    def end_3diff(self, x, h=10**(-5)):
+        """
+          Three-Point Endpoint: Approximates f'(x) using
+          (-3f(x)+4f(x+h)-f(x+2h))/2h for very small h.
+
+          Args:
+              x (float): Approximation point
+              h (float): Increment
+
+          Returns:
+              float: f'(x) approximation
+          """
+        return (-3*self.func(x) + 4*self.func(x+h) - self.func(x+2*h))/(2*h)
+
+    def mid_3diff(self, x, h=10**(-5)):
+        """
+          Three-Point Midpoint: Approximates f'(x) using (f(x+h)-f(x-h))/2h for very small h.
+
+          Args:
+              x (float): Approximation point
+              h (float): Increment
+
+          Returns:
+              float: f'(x) approximation
+          """
         return (self.func(x + h) - self.func(x - h))/(2*h)
 
     def second_diff(self, x, h=10**(-5)):

@@ -45,7 +45,8 @@ class FindRoot:
           Uses Bisection method to approximate root to f(x) on interval [a,b].
 
           Args:
-              a,b (float): Defines interval [a,b] to search for root.
+              a (float): Defines interval [a,b] to search for root.
+              b (float): Defines interval [a,b] to search for root.
               n_0 (int): Max iterations.
               tol (float): Error tolerance.
 

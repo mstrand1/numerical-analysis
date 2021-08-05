@@ -107,7 +107,7 @@ class Interpolation:
         if not y and not yp:
             for i in range(n):
                 y[i] = self.func(x[i])
-                yp[i] = NumMethods(self.func).mid_diff(x[i])
+                yp[i] = NumMethods(self.func).mid_3diff(x[i])
         for i in range(n):
             z[2*i] = x[i]
             z[2*i+1] = x[i]
@@ -238,10 +238,11 @@ class Interpolation:
           Compute Chebyshev polynomial approximation of f(x).
 
           Args:
-              n (int): Max degree Chebyshev polynomial.
+              approx (float): Approximation value
+              n (int): Max degree Chebyshev polynomial
 
           Returns:
-              float: Approximation to f(x) at approx value.
+              float: Approximation to f(x) at approx value
           """
         c = self.cheby_coeff(n)
         p = 0
