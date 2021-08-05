@@ -62,6 +62,19 @@ class Interpolation:
         return dd
 
     def hdiv_diff(self, x, y=None, yp=None):
+        """
+          Obtains coefficients of Hermite interpolating polynomial using divided-differences.
+          Requires equal-length x,y,yp arrays or just x array if f(x) is known and differentiable.
+
+          Args:
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
+              yp (1D array): First derivative y' evaluated at x
+
+          Returns:
+              ndarray: 2D (2n x 2n) array of divided-difference coefficients. ith column represents
+              i-1th divided differences.
+          """
         n = len(x)
         z = np.zeros((2*n))
         q = np.zeros((2*n, 2*n))
@@ -82,8 +95,21 @@ class Interpolation:
                 q[i, j] = (q[i, j-1] - q[i-1, j-1]) / (z[i]-z[i-j])
         return q, z
 
-    def hermite(self, x, approx):
-        hdd, z = self.hdiv_diff(x)
+    def hermite(self, x, y=None, yp=None, approx=None):
+        """
+          Gives approximation using Hermite polynomial with divided-difference coefficients.
+          Requires equal-length x,y,yp arrays or just x array if f(x) is known and differentiable.
+
+          Args:
+              x (1D array): x,y interpolation point.
+              y (1D array): x,y interpolation point.
+              yp (1D array): First derivative y' evaluated at x
+              approx (float): Value to approximate.
+
+          Returns:
+              float: Hermite approximate.
+          """
+        hdd, z = self.hdiv_diff(x,y,yp)
         n = int(len(z)/2)
         hp = hdd[0, 0]
         for i in range(1, 2*n):
@@ -94,6 +120,17 @@ class Interpolation:
         return hp
 
     def spline_coeff(self, x, y=None):
+        """
+          Construct cubic spline coefficients to approximate on appropriate interval(s).
+          Ex: for x in [x(i-1), x(i)], spline S_i(x) = a_i + b_ix + c_ix^2 + d_ix^3
+
+          Args:
+              x (1D array): x,y interpolation point.
+              y (1D array): x,y interpolation point.
+
+          Returns:
+              1D array: a, b, c, d are the spline coefficients: a + bx +cx^2 +dx^3
+          """
         n = len(x)
         a = np.zeros(n)
         if not y:
@@ -101,14 +138,7 @@ class Interpolation:
                 a[i] = self.func(x[i])
         elif y:
             a = y
-        h = np.zeros(n)
-        alph = h.copy()
-        mu = h.copy()
-        l = a.copy()
-        z = l.copy()
-        c = l.copy()
-        b = h.copy()
-        d = h.copy()
+        h, alph, mu, l, z, c, b, d = np.zeros((8, n))
         for i in range(n-1):
             h[i] = x[i+1] - x[i]
         for i in range(1, n-1):
@@ -133,9 +163,20 @@ class Interpolation:
         d = d[:n-1]
         return a, b, c, d
 
-    def cubic_spline(self, x, approx):
+    def cubic_spline(self, x, y=None, approx=None):
+        """
+          Construct cubic splines to approximate on appropriate interval(s).
+
+          Args:
+              x (1D array): x,y interpolation point.
+              y (1D array): x,y interpolation point.
+              approx (float or 1D array): Value(s) to approximate.
+
+          Returns:
+              ndarray: 1D array of approximations.
+          """
         n = len(x)
-        a, b, c, d = self.spline_coeff(x)
+        a, b, c, d = self.spline_coeff(x, y)
         if type(approx) == float:
             approx = [approx]
         m = len(approx)
@@ -147,6 +188,16 @@ class Interpolation:
         return sy
 
     def cheby_coeff(self, n):
+        """
+          Compute Chebyshev coefficients for Chebyshev polynomial approximations.
+          Requires known function f(x).
+
+          Args:
+              n (int): Degree of Chebyshev polynomial.
+
+          Returns:
+              ndarray: 1D array of coefficients to be used in polynomial approximation.
+          """
         f = self.func
         bp = lambda a: f(np.cos(a))
         a = np.zeros(n+2)
@@ -157,6 +208,15 @@ class Interpolation:
         return a[1:n+2]
 
     def chebyshev(self, approx, n=4):
+        """
+          Compute Chebyshev polynomial approximation of f(x).
+
+          Args:
+              n (int): Max degree Chebyshev polynomial.
+
+          Returns:
+              float: Approximation to f(x) at approx value.
+          """
         c = self.cheby_coeff(n)
         p = 0
         for i in range(n+1):
