@@ -23,8 +23,7 @@ class NumMethods:
 
     def end_3diff(self, x, h=10**(-5)):
         """
-          Three-Point Endpoint: Approximates f'(x) using
-          (-3f(x)+4f(x+h)-f(x+2h))/2h for very small h.
+          Three-Point Endpoint: Approximates f'(x)
 
           Args:
               x (float): Approximation point
@@ -37,7 +36,7 @@ class NumMethods:
 
     def mid_3diff(self, x, h=10**(-5)):
         """
-          Three-Point Midpoint: Approximates f'(x) using (f(x+h)-f(x-h))/2h for very small h.
+          Three-Point Midpoint: Approximates f'(x)
 
           Args:
               x (float): Approximation point
@@ -48,10 +47,58 @@ class NumMethods:
           """
         return (self.func(x + h) - self.func(x - h))/(2*h)
 
+    def end_5diff(self, x, h=10**(-5)):
+        """
+          Five-Point Endpoint: Approximates f'(x)
+
+          Args:
+              x (float): Approximation point
+              h (float): Increment
+
+          Returns:
+              float: f'(x) approximation
+          """
+        return (-25*self.func(x) + 48*self.func(x + h) - 36*self.func(x + 2*h) +
+                16*self.func(x+3*h) - 3*self.func(x + 4*h))/(12*h)
+
+    def mid_5diff(self, x, h=10**(-5)):
+        """
+          Five-Point Midpoint: Approximates f'(x)
+
+          Args:
+              x (float): Approximation point
+              h (float): Increment
+
+          Returns:
+              float: f'(x) approximation
+          """
+        return (self.func(x - 2*h) - 8*self.func(x - h) + 8*self.func(x + h) -
+                self.func(x + 2*h))/(12*h)
+
     def second_diff(self, x, h=10**(-5)):
+        """
+          Second Derivative Midpoint: Approximates f''(x)
+
+          Args:
+              x (float): Approximation point
+              h (float): Increment
+
+          Returns:
+              float: f''(x) approximation
+          """
         return (self.func(x - h) - 2*self.func(x) + self.func(x+h)) / (h**2)
 
     def trapezoid_rule(self, a, b):
+        """
+          Approximate area under f(x) within [a,b] using a trapezoid.
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         return ((b - a)/2) * (self.func(a) + self.func(b))
 
     def trap_comp(self, a, b, n=10):
@@ -62,6 +109,16 @@ class NumMethods:
         return (h/2) * (self.func(a) + 2*m + self.func(b))
 
     def simpsons_rule(self, a, b):
+        """
+          Simpson's rule approximation of int_(a,b)f(x)dx.
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         h = (b - a)/2
         return (h/3) * (self.func(a) + 4*self.func((b+a)/2) + self.func(b))
 
