@@ -102,6 +102,17 @@ class NumMethods:
         return ((b - a)/2) * (self.func(a) + self.func(b))
 
     def trap_comp(self, a, b, n=10):
+        """
+          Composite trapezoid rule approximation of int_(a,b)f(x)dx over n sub intervals.
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+              n (int): Number of sub intervals. Must be an even integer
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         h = (b - a)/n
         m = 0
         for i in range(n):
@@ -123,6 +134,17 @@ class NumMethods:
         return (h/3) * (self.func(a) + 4*self.func((b+a)/2) + self.func(b))
 
     def simp_comp(self, a, b, n=10):
+        """
+          Composite Simpson's rule approximation of int_(a,b)f(x)dx over n sub intervals.
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+              n (int): Number of sub intervals. Must be an even integer
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         h = (b-a)/n
         nn0 = self.func(a) + self.func(b)
         nn1 = 0
@@ -136,8 +158,22 @@ class NumMethods:
         xi = h*(nn0 + 2*nn2 + 4*nn1)/3
         return xi
 
-    #not working
     def simp_adpt(self, ap, bp, tol=10**(-5), n_0=20):
+        """
+          Adaptive Simpson's rule approximation of int_(a,b)f(x)dx.
+
+          !~~~~~~~~~~~~~~~~~!
+          *** IN PROGRESS ***
+          !~~~~~~~~~~~~~~~~~!
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+              n (int): Number of sub intervals. Must be an even integer
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         approx = 0
         i = 0
         e = np.zeros(n_0)
@@ -214,7 +250,8 @@ class NumMethods:
         return approx
 
     def gquad(self, a, b):
-        return (self.func((1 / 2)*((b-a)*(-np.sqrt(3)/3)+a+b))+self.func((1/2)*((b-a)*(np.sqrt(3)/3)+a+b)))*(b-a)/2
+        return (self.func((1/2) * ((b-a) * (-np.sqrt(3)/3) + a+b)) +
+                self.func((1/2) * ((b-a) * (np.sqrt(3)/3) + a+b))) * (b-a)/2
 
     def adpt_gquad(self, a, b, level=0, sm=0, n_0=20, tol=10**(-7)):
         level += 1
