@@ -12,6 +12,17 @@ class Interpolation:
         self.func = func
 
     def lagrange(self, x, y=None, approx=None):
+        """
+          Approximation via Lagrange polynomial interpolation.
+
+          Args:
+              x (1D array): x,y interpolation point.
+              y (1D array): x,y interpolation point.
+              approx (float): Value to approximate.
+
+          Returns:
+              float: Approximation
+          """
         n = len(x)
         if not y:
             y = np.zeros(n)
@@ -27,10 +38,25 @@ class Interpolation:
             interp += y[i] * l[i]
         return interp
 
-    def dd_lagrange(self, x, approx):
-        dd = self.div_diff(x)
-        interp = dd[0, 0]
+    def dd_lagrange(self, x, y=None, approx=None):
+        """
+          Approximation via Lagrange polynomial interpolation with divided-difference coefficients.
+
+          Args:
+              x (1D array): x,y interpolation point.
+              y (1D array): x,y interpolation point.
+              approx (float): Value to approximate.
+
+          Returns:
+              float: Approximation
+          """
         n = len(x)
+        if not y:
+            y = np.zeros(n)
+            for i in range(n):
+                y[i] = self.func(x[i])
+        dd = self.div_diff(x, y)
+        interp = dd[0, 0]
         for i in range(1, n):
             d = 1
             for j in range(i):
