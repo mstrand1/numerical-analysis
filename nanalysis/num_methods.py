@@ -4,7 +4,14 @@ import numpy as np
 class NumMethods:
     """
     Methods of numerical differentiation and integration.
+
+        - Differentiation: Forward differences, endpoint and midpoint 3 and 5 point differences,
+                           second derivative midpoint
+
+        - Integration: Trapezoid rule (composite), Simpson's rule (composite + adaptive),
+                       Gaussian quadrature (adaptive)
     """
+
     def __init__(self, func=None):
         self.func = func
 
@@ -45,7 +52,7 @@ class NumMethods:
           Returns:
               float: f'(x) approximation
           """
-        return (self.func(x + h) - self.func(x - h))/(2*h)
+        return (self.func(x+h) - self.func(x-h))/(2*h)
 
     def end_5diff(self, x, h=10**(-5)):
         """
@@ -58,8 +65,8 @@ class NumMethods:
           Returns:
               float: f'(x) approximation
           """
-        return (-25*self.func(x) + 48*self.func(x + h) - 36*self.func(x + 2*h) +
-                16*self.func(x+3*h) - 3*self.func(x + 4*h))/(12*h)
+        return (-25*self.func(x) + 48*self.func(x+h) - 36*self.func(x+2*h) +
+                16*self.func(x+3*h) - 3*self.func(x+4*h))/(12*h)
 
     def mid_5diff(self, x, h=10**(-5)):
         """
@@ -72,8 +79,8 @@ class NumMethods:
           Returns:
               float: f'(x) approximation
           """
-        return (self.func(x - 2*h) - 8*self.func(x - h) + 8*self.func(x + h) -
-                self.func(x + 2*h))/(12*h)
+        return (self.func(x-2*h) - 8*self.func(x-h) + 8*self.func(x+h) -
+                self.func(x+2*h))/(12*h)
 
     def second_diff(self, x, h=10**(-5)):
         """
@@ -86,7 +93,7 @@ class NumMethods:
           Returns:
               float: f''(x) approximation
           """
-        return (self.func(x - h) - 2*self.func(x) + self.func(x+h)) / (h**2)
+        return (self.func(x-h) - 2*self.func(x) + self.func(x+h))/(h**2)
 
     def trapezoid_rule(self, a, b):
         """
@@ -99,11 +106,12 @@ class NumMethods:
           Returns:
               float: int_(a,b)f(x)dx approximation
           """
-        return ((b - a)/2) * (self.func(a) + self.func(b))
+        return ((b-a)/2) * (self.func(a) + self.func(b))
 
     def trap_comp(self, a, b, n=10):
         """
-          Composite trapezoid rule approximation of int_(a,b)f(x)dx over n sub intervals.
+          Composite trapezoid rule approximation of int_(a,b)f(x)dx by summing
+          trapezoidal approximations for n sub intervals.
 
           Args:
               a (float): Defines [a,b] integration bounds
@@ -113,7 +121,7 @@ class NumMethods:
           Returns:
               float: int_(a,b)f(x)dx approximation
           """
-        h = (b - a)/n
+        h = (b-a)/n
         m = 0
         for i in range(n):
             m += self.func(a+i*h)
@@ -130,12 +138,13 @@ class NumMethods:
           Returns:
               float: int_(a,b)f(x)dx approximation
           """
-        h = (b - a)/2
+        h = (b-a)/2
         return (h/3) * (self.func(a) + 4*self.func((b+a)/2) + self.func(b))
 
     def simp_comp(self, a, b, n=10):
         """
-          Composite Simpson's rule approximation of int_(a,b)f(x)dx over n sub intervals.
+          Composite Simpson's rule approximation of int_(a,b)f(x)dx by applying
+          Simpson's rule over n sub intervals.
 
           Args:
               a (float): Defines [a,b] integration bounds
@@ -146,16 +155,16 @@ class NumMethods:
               float: int_(a,b)f(x)dx approximation
           """
         h = (b-a)/n
-        nn0 = self.func(a) + self.func(b)
-        nn1 = 0
-        nn2 = 0
+        x_0 = self.func(a) + self.func(b)
+        x_odd = 0
+        x_even = 0
         for i in range(1, n):
-            x = a+i*h
+            x = a + i*h
             if i % 2 == 0:
-                nn2 += self.func(x)
+                x_even += self.func(x)
             else:
-                nn1 += self.func(x)
-        xi = h*(nn0 + 2*nn2 + 4*nn1)/3
+                x_odd += self.func(x)
+        xi = h*(x_0 + 2*x_even + 4*x_odd)/3
         return xi
 
     def simp_adpt(self, ap, bp, tol=10**(-5), n_0=20):
@@ -286,7 +295,7 @@ class NumMethods:
         c = (a+b)/2
         two_gauss = self.gquad(a, c) + self.gquad(c, b)
         if level > n_0:
-            print("Error: Max depth reached.")
+            print("Max depth reached")
         else:
             if abs(one_gauss - two_gauss) < tol:
                 sm += two_gauss
