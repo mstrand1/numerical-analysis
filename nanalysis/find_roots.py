@@ -4,54 +4,50 @@ from nanalysis.num_methods import NumMethods
 class FindRoot:
     """
     Methods for finding roots and fixed-points of a function f(x).
+        - Newton's method
+        - Bisection method
+        - Fixed-Point iteration
     """
 
     def __init__(self, func=None):
-        """
-
-        func (function): Function f(x).
-        """
         self.func = func
 
     def newton_method(self, p_0=0.0, n_0=10, tol=10**(-7)):
         """
           Uses Newton's method to approximate root to f(x) given an initial approximation.
+          For this algorithm, f'(x) is approximated using the three-point midpoint formula.
 
           Args:
-              p_0 (float): Initial approximation to root.
-              n_0 (int): Max iterations.
-              tol (float): Error tolerance.
+              p_0 (float): Initial approximation to root
+              n_0 (int): Max iterations
+              tol (float): Error tolerance
 
           Returns:
-              float: Approximation to root f(x) = 0.
+              float: Approximation to root f(x) = 0
           """
         i = 1
-        found = False
         while i < n_0:
-            p = p_0 - self.func(p_0) / NumMethods(self.func).mid_diff(p_0)
+            p = p_0 - self.func(p_0) / NumMethods(self.func).mid_3diff(p_0)
             if abs(p - p_0) < tol:
-                found = True
-                break
+                print("Root: ", p, " found after ", i + 1, "iterations.")
+                return p
             i += 1
             p_0 = p
-        if not found:
-            print("Root not found after", n_0, " iterations.")
-            return
-        elif found:
-            print("Root: ", p, " found after ", i+ 1, "iterations.")
-            return p
+        print("Root not found after", n_0, " iterations.")
+        return None
 
-    def bisection_method(self, a=-5.0, b=5.0, n_0=10, tol=10**(-7)):
+    def bisection_method(self, a, b, n_0=10, tol=10**(-7)):
         """
           Uses Bisection method to approximate root to f(x) on interval [a,b].
 
           Args:
-              a,b (float): Defines interval [a,b] to search for root.
-              n_0 (int): Max iterations.
-              tol (float): Error tolerance.
+              a (float): Defines interval [a,b] to search for root
+              b (float): Defines interval [a,b] to search for root
+              n_0 (int): Max iterations
+              tol (float): Error tolerance
 
           Returns:
-              float: Approximation to root f(x) = 0.
+              float: Approximation to root f(x) = 0
           """
         if self.func(a) * self.func(b) > 0:
             print("Bad interval: f must change signs.")
@@ -74,7 +70,7 @@ class FindRoot:
 
     def fixed_point(self, p_0=0.0, n_0=10, tol=10**(-7)):
         """
-          Finds p, the solution to p = g(p).
+          Finds a fixed-point p, the solution to p = g(p).
 
           Args:
               p_0 (float): Initial approximation
@@ -85,17 +81,12 @@ class FindRoot:
               float: Approximation to fixed point p = g(p).
           """
         i = 1
-        found = False
         while i < n_0:
             p = self.func(p_0)
             if abs(p - p_0) < tol:
-                found = True
-                break
+                print("Root: ", p, " found after ", i + 1, "iterations.")
+                return p
             i += 1
             p_0 = p
-        if not found:
-            print("Fixed-point not found after", n_0, " iterations.")
-            return None
-        elif found:
-            print("Root: ", p, " found after ", i + 1, "iterations.")
-            return p
+        print("Fixed-point not found after", n_0, " iterations.")
+        return None
