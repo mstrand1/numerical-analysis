@@ -6,6 +6,12 @@ class Interpolation:
     """
     Methods of approximation by different polynomial interpolants using either a known f(x)
     or a set of x,y values.
+
+        - Lagrange interpolation (with and w/o divided differences)
+        - Hermite interpolation (by divided differences)
+        - Cubic spline interpolation (Natural - satisfies S''(a) = S''(b) = 0)
+        - Chebyshev polynomial approximation
+
     """
 
     def __init__(self, func=None):
@@ -16,9 +22,9 @@ class Interpolation:
           Approximation via Lagrange polynomial interpolation.
 
           Args:
-              x (1D array): x,y interpolation point.
-              y (1D array): x,y interpolation point.
-              approx (float): Value to approximate.
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
+              approx (float): Value to approximate
 
           Returns:
               float: Approximation
@@ -43,9 +49,9 @@ class Interpolation:
           Approximation via Lagrange polynomial interpolation with divided-difference coefficients.
 
           Args:
-              x (1D array): x,y interpolation point.
-              y (1D array): x,y interpolation point.
-              approx (float): Value to approximate.
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
+              approx (float): Value to approximate
 
           Returns:
               float: Approximation
@@ -128,15 +134,15 @@ class Interpolation:
           Requires equal-length x,y,yp arrays or just x array if f(x) is known and differentiable.
 
           Args:
-              x (1D array): x,y interpolation point.
-              y (1D array): x,y interpolation point.
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
               yp (1D array): First derivative y' evaluated at x
-              approx (float): Value to approximate.
+              approx (float): Value to approximate
 
           Returns:
-              float: Hermite approximate.
+              float: Hermite approximate
           """
-        hdd, z = self.hdiv_diff(x,y,yp)
+        hdd, z = self.hdiv_diff(x, y, yp)
         n = int(len(z)/2)
         hp = hdd[0, 0]
         for i in range(1, 2*n):
@@ -152,8 +158,8 @@ class Interpolation:
           Ex: for x in [x(i-1), x(i)], spline S_i(x) = a_i + b_ix + c_ix^2 + d_ix^3
 
           Args:
-              x (1D array): x,y interpolation point.
-              y (1D array): x,y interpolation point.
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
 
           Returns:
               1D array: a, b, c, d are the spline coefficients: a + bx +cx^2 +dx^3
@@ -195,12 +201,12 @@ class Interpolation:
           Construct cubic splines to approximate on appropriate interval(s).
 
           Args:
-              x (1D array): x,y interpolation point.
-              y (1D array): x,y interpolation point.
-              approx (float or 1D array): Value(s) to approximate.
+              x (1D array): x,y interpolation point
+              y (1D array): x,y interpolation point
+              approx (float or 1D array): Value(s) to approximate
 
           Returns:
-              ndarray: 1D array of approximations.
+              ndarray: 1D array of approximations
           """
         n = len(x)
         a, b, c, d = self.spline_coeff(x, y)
@@ -220,10 +226,10 @@ class Interpolation:
           Requires known function f(x).
 
           Args:
-              n (int): Degree of Chebyshev polynomial.
+              n (int): Degree of Chebyshev polynomial
 
           Returns:
-              ndarray: 1D array of coefficients to be used in polynomial approximation.
+              ndarray: 1D array of coefficients to be used in polynomial approximation
           """
         f = self.func
         bp = lambda a: f(np.cos(a))
