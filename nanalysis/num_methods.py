@@ -122,10 +122,10 @@ class NumMethods:
               float: int_(a,b)f(x)dx approximation
           """
         h = (b-a)/n
-        m = 0
+        mid_terms = 0
         for i in range(n):
-            m += self.func(a+i*h)
-        return (h/2) * (self.func(a) + 2*m + self.func(b))
+            mid_terms += self.func(a+i*h)
+        return (h/2) * (self.func(a) + 2*mid_terms + self.func(b))
 
     def simpsons_rule(self, a, b):
         """
@@ -251,7 +251,7 @@ class NumMethods:
         return (self.func((1/2) * ((b-a) * (-np.sqrt(3)/3) + a+b)) +
                 self.func((1/2) * ((b-a) * (np.sqrt(3)/3) + a+b))) * (b-a)/2
 
-    def gquad_adpt(self, a, b, level=0, sm=0, n_0=20, tol=10**(-7)):
+    def gquad_adpt(self, a, b, level=0, current_sum=0, n_0=20, tol=10**(-7)):
         """
           Adaptive two-point Gaussian quadrature. Applies two-point Gaussian quadrature on sub intervals
           from splitting [a,b] until specified level of precision is reached.
@@ -260,7 +260,7 @@ class NumMethods:
               a (float): Defines [a,b] integration bounds
               b (float): Defines [a,b] integration bounds
               level (int): Counts interval split depth
-              sm (float): Current interval approximation
+              current_sum (float): Current interval approximation
               n_0 (int): Max depth
               tol (float): Error tolerance
 
@@ -275,8 +275,8 @@ class NumMethods:
             print("Max depth reached")
         else:
             if abs(one_gauss - two_gauss) < tol:
-                sm += two_gauss
+                current_sum += two_gauss
             else:
-                sm = self.gquad_adpt(a, c, level=level, sm=sm, n_0=n_0)
-                sm = self.gquad_adpt(c, b, level=level, sm=sm, n_0=n_0)
-        return sm
+                current_sum = self.gquad_adpt(a, c, level=level, current_sum=current_sum, n_0=n_0)
+                current_sum = self.gquad_adpt(c, b, level=level, current_sum=current_sum, n_0=n_0)
+        return current_sum
