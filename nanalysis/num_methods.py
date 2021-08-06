@@ -167,12 +167,13 @@ class NumMethods:
           !~~~~~~~~~~~~~~~~~!
 
           Args:
-              a (float): Defines [a,b] integration bounds
-              b (float): Defines [a,b] integration bounds
-              n (int): Number of sub intervals. Must be an even integer
+              ap (float): Defines [a,b] integration bounds
+              bp (float): Defines [a,b] integration bounds
+              tol (float): Error tolerance
+              n_0 (int): Max depth ??
 
           Returns:
-              float: int_(a,b)f(x)dx approximation
+              float: int_(a,b) f(x)dx approximation
           """
         approx = 0
         i = 0
@@ -208,7 +209,7 @@ class NumMethods:
             fd = self.func(a[i] + h[i]/2)
             fe = self.func(a[i] + 3*h[i]/2)
             s1 = h[i]*(fa[i] + 4*fd + fc[i])/6
-            s2 = h[i]*(fc[i]+4*fe + fb[i])/6
+            s2 = h[i]*(fc[i] + 4*fe + fb[i])/6
             v1 = a[i]
             v2 = fa[i]
             v3 = fc[i]
@@ -220,7 +221,6 @@ class NumMethods:
             i -= 1
 
         if abs(s1 + s2 - v7) < v6:
-            print('mommy')
             approx += s1 + s2
         elif v8 >= n_0:
             print("Level exceeded.")
@@ -250,10 +250,37 @@ class NumMethods:
         return approx
 
     def gquad(self, a, b):
+        """
+          Two-point Gaussian quadrature formula for approximating int_(a,b)f(x)dx where
+          [a,b] is a general interval. Derived from the approximation
+          int_(-1,1) f(x)dx (approximately) = f( -sqrt(3)/3 ) - f( sqrt(3)/3 )
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         return (self.func((1/2) * ((b-a) * (-np.sqrt(3)/3) + a+b)) +
                 self.func((1/2) * ((b-a) * (np.sqrt(3)/3) + a+b))) * (b-a)/2
 
     def adpt_gquad(self, a, b, level=0, sm=0, n_0=20, tol=10**(-7)):
+        """
+          Adaptive two-point Gaussian quadrature. Applies two-point Gaussian quadrature on sub intervals
+          from splitting [a,b] until specified level of precision is reached.
+
+          Args:
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
+              level (int): Counts interval split depth
+              sm (float): Current interval approximation
+              n_0 (int): Max depth
+              tol (float): Error tolerance
+
+          Returns:
+              float: int_(a,b)f(x)dx approximation
+          """
         level += 1
         one_gauss = self.gquad(a, b)
         c = (a+b)/2
