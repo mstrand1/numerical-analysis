@@ -24,7 +24,7 @@ class Interpolation:
               float: Approximation
           """
         n = len(x)
-        if not y:
+        if y is None:
             y = np.zeros(n)
             for i in range(n):
                 y[i] = self.func(x[i])
@@ -51,7 +51,7 @@ class Interpolation:
               float: Approximation
           """
         n = len(x)
-        if not y:
+        if y is None:
             y = np.zeros(n)
             for i in range(n):
                 y[i] = self.func(x[i])
@@ -78,9 +78,9 @@ class Interpolation:
           """
         n = len(x)
         dd = np.zeros((n, n))
-        if not y:
+        if y is None:
             dd[:, 0] = np.transpose(self.func(x))
-        elif y:
+        else:
             dd[:, 0] = np.transpose(y)
         for i in range(n-1):
             for j in range(i+1):
@@ -104,7 +104,8 @@ class Interpolation:
         n = len(x)
         z = np.zeros((2*n))
         q = np.zeros((2*n, 2*n))
-        if not y and not yp:
+        if y is None and yp is None:
+            y, yp = np.zeros(n), np.zeros(n)
             for i in range(n):
                 y[i] = self.func(x[i])
                 yp[i] = NumMethods(self.func).mid_3diff(x[i])
