@@ -167,59 +167,36 @@ class NumMethods:
         xi = h*(x_0 + 2*x_even + 4*x_odd)/3
         return xi
 
-    def simp_adpt(self, ap, bp, tol=10**(-5), n_0=20):
+    def simp_adpt(self, a, b, tol=10**(-5), n_0=20):
         """
           Adaptive Simpson's rule approximation of int_(a,b)f(x)dx.
 
-          !~~~~~~~~~~~~~~~~~!
-          *** IN PROGRESS ***
-          !~~~~~~~~~~~~~~~~~!
-
           Args:
-              ap (float): Defines [a,b] integration bounds
-              bp (float): Defines [a,b] integration bounds
+              a (float): Defines [a,b] integration bounds
+              b (float): Defines [a,b] integration bounds
               tol (float): Error tolerance
-              n_0 (int): Max depth ??
+              n_0 (int): Max sub interval depth
 
           Returns:
               float: int_(a,b) f(x)dx approximation
           """
         approx = 0
         i = 0
-        e = np.zeros(n_0)
-        a = e.copy()
-        h = e.copy()
-        fa = e.copy()
-        fc = e.copy()
-        fb = e.copy()
-        s = e.copy()
-        l = e.copy()
-        fd = 0
-        fe = 0
-        s1 = 0
-        s2 = 0
-        v1 = 0
-        v2 = 0
-        v3 = 0
-        v4 = 0
-        v5 = 0
-        v6 = 0
-        v7 = 0
-        v8 = 0
+        e, a0, h, fa, fc, fb, s, l = np.zeros((8, n_0))
         e[i] = 10*tol
-        a[i] = ap
-        h[i] = (bp-ap)/2
-        fa[i] = self.func(ap)
-        fc[i] = self.func(ap+h[i])
-        fb[i] = self.func(bp)
-        s[i] = h[i] * (fa[i] + 4*fc[i] + fb[i])/3
+        a0[i] = a
+        h[i] = (b-a)/2
+        fa[i] = self.func(a)
+        fc[i] = self.func(a+h[i])
+        fb[i] = self.func(b)
+        s[i] = h[i]*(fa[i] + 4*fc[i] + fb[i])/3
         l[i] = 1
-        while i > 0:
-            fd = self.func(a[i] + h[i]/2)
-            fe = self.func(a[i] + 3*h[i]/2)
+        while i > -1:
+            fd = self.func(a0[i] + h[i]/2)
+            fe = self.func(a0[i] + 3*h[i]/2)
             s1 = h[i]*(fa[i] + 4*fd + fc[i])/6
             s2 = h[i]*(fc[i] + 4*fe + fb[i])/6
-            v1 = a[i]
+            v1 = a0[i]
             v2 = fa[i]
             v3 = fc[i]
             v4 = fb[i]
@@ -229,33 +206,33 @@ class NumMethods:
             v8 = l[i]
             i -= 1
 
-        if abs(s1 + s2 - v7) < v6:
-            approx += s1 + s2
-        elif v8 >= n_0:
-            print("Level exceeded.")
-            return None
-        else:
-            i += 1
-            a[i] = v1 + v5
-            fa[i] = v3
-            fc[i] = fe
-            fb[i] = v4
-            h[i] = v5/2
-            e[i] = v6/2
-            s[i] = s2
-            l[i] = v8 + 1
+            if abs(s1 + s2 - v7) < v6:
+                approx += s1 + s2
+            elif v8 >= n_0:
+                print("Level exceeded")
+                return None
+            else:
+                i += 1
 
-            i += 1
+                a0[i] = v1 + v5
+                fa[i] = v3
+                fc[i] = fe
+                fb[i] = v4
+                h[i] = v5/2
+                e[i] = v6/2
+                s[i] = s2
+                l[i] = v8 + 1
 
-            a[i] = v1
-            fa[i] = v2
-            fc[i] = fd
-            fb[i] = v3
-            h[i] = h[i-1]
-            e[i] = e[i-1]
-            s[i] = s1
-            l[i] = l[i-1]
+                i += 1
 
+                a0[i] = v1
+                fa[i] = v2
+                fc[i] = fd
+                fb[i] = v3
+                h[i] = h[i-1]
+                e[i] = e[i-1]
+                s[i] = s1
+                l[i] = l[i-1]
         return approx
 
     def gquad(self, a, b):
@@ -274,7 +251,7 @@ class NumMethods:
         return (self.func((1/2) * ((b-a) * (-np.sqrt(3)/3) + a+b)) +
                 self.func((1/2) * ((b-a) * (np.sqrt(3)/3) + a+b))) * (b-a)/2
 
-    def adpt_gquad(self, a, b, level=0, sm=0, n_0=20, tol=10**(-7)):
+    def gquad_adpt(self, a, b, level=0, sm=0, n_0=20, tol=10**(-7)):
         """
           Adaptive two-point Gaussian quadrature. Applies two-point Gaussian quadrature on sub intervals
           from splitting [a,b] until specified level of precision is reached.
@@ -300,6 +277,6 @@ class NumMethods:
             if abs(one_gauss - two_gauss) < tol:
                 sm += two_gauss
             else:
-                sm = self.adpt_gquad(a, c, level=level, sm=sm, n_0=n_0)
-                sm = self.adpt_gquad(c, b, level=level, sm=sm, n_0=n_0)
+                sm = self.gquad_adpt(a, c, level=level, sm=sm, n_0=n_0)
+                sm = self.gquad_adpt(c, b, level=level, sm=sm, n_0=n_0)
         return sm
