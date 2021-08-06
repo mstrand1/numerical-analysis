@@ -4,6 +4,12 @@ import numpy as np
 class LinSys:
     """
     Methods for solving linear systems of the form Ax=b.
+
+        - Gaussian elimination with back substitution
+        - Matrix inversion
+        - Jacobi iterative method
+        - Gauss-Seidel iterative method
+        - Successive over-relaxation
     """
 
     def gauss_elim(self, a):
@@ -11,7 +17,7 @@ class LinSys:
         Performs Gaussian elimination followed by back substitution to solve a system Ax = b.
 
         Args:
-            a (ndarray): Augmented (n x n+1) 2D array [A : b].
+            a (ndarray): Augmented (n x n+1) 2D array [A : b]
 
         Returns:
             ndarray: 1D solutions array (x)
@@ -49,10 +55,10 @@ class LinSys:
         Transforms a matrix into its reduced row echelon form.
 
         Args:
-            a (ndarray): Augmented (n x n) 2D array. Last column is b.
+            a (ndarray): Augmented (n x n) 2D array. Last column is b
 
         Returns:
-            ndarray: 1D solutions array (x).
+            ndarray: 1D solutions array (x)
         """
         a = np.array(a)
         n = len(a)
@@ -84,10 +90,10 @@ class LinSys:
         Augments a matrix with the identity matrix.
 
         Args:
-            a (ndarray): Augmented (n x n) 2D array.
+            a (ndarray): Augmented (n x n) 2D array
 
         Returns:
-            ndarray: 2D (n x n+n) array.
+            ndarray: 2D (n x n+n) array
         """
         return np.append(a, np.identity(len(a)), axis=1)
 
@@ -96,10 +102,10 @@ class LinSys:
         Calculates the inverse of a matrix A through row reduction of [A : I].
 
         Args:
-            a (ndarray): Augmented (n x n) 2D array.
+            a (ndarray): Augmented (n x n) 2D array
 
         Returns:
-            ndarray: Columns n+1:2n of [I : A^-1].
+            ndarray: Columns n+1:2n of [I : A^-1]
         """
         n = len(a)
         inv = self.__rref(self.__aug(a))
@@ -110,14 +116,14 @@ class LinSys:
         Jacobi iterative method for solving a nxn linear system Ax = b.
 
         Args:
-            a (ndarray): A - (n x n) 2D array.
-            b (ndarray): b - (n x 1) 2D array.
+            a (ndarray): A - (n x n) 2D array
+            b (ndarray): b - (n x 1) 2D array
             x_0 (ndarray): Initial approximation vector
             tol (float): Error tolerance
             n_0 (int): Max iterations
 
         Returns:
-            ndarray: 1D solutions solution array (x).
+            ndarray: 1D solutions solution array (x)
         """
         n = len(a)
         if x_0 is None:
@@ -183,15 +189,15 @@ class LinSys:
         Successive over-relaxation (SOR) method for solving a nxn linear system Ax = b.
 
         Args:
-            a (ndarray): A, (n x n) 2D array.
-            b (ndarray): b, (1 x n) 1D array.
+            a (ndarray): A, (n x n) 2D array
+            b (ndarray): b, (1 x n) 1D array
             x_0 (ndarray): (1 x n) 1D array - Initial approximation vector
             tol (float): Error tolerance
             n_0 (int): Max iterations
-            w (float): Weight. 1 < w for accelerated convergence.
+            w (float): Weight. 1 < w for accelerated convergence
 
         Returns:
-            ndarray: 1D solutions solution array (x).
+            ndarray: 1D solutions solution array (x)
         """
         n = len(a)
         if x_0 is None:
