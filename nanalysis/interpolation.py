@@ -17,14 +17,14 @@ class Interpolation:
     def __init__(self, func=None):
         self.func = func
 
-    def lagrange(self, x, y=None, approx=None):
+    def lagrange(self, x, approx, y=None):
         """
           Approximation via Lagrange polynomial interpolation.
 
           Args:
               x (1D array): x,y interpolation point
-              y (1D array): x,y interpolation point
               approx (float): Value to approximate
+              y (1D array): x,y interpolation point
 
           Returns:
               float: Approximation
@@ -44,14 +44,14 @@ class Interpolation:
             interp += y[i] * l[i]
         return interp
 
-    def lagrange_dd(self, x, y=None, approx=None):
+    def lagrange_dd(self, x, approx, y=None):
         """
           Approximation via Lagrange polynomial interpolation with divided-difference coefficients.
 
           Args:
               x (1D array): x,y interpolation point
-              y (1D array): x,y interpolation point
               approx (float): Value to approximate
+              y (1D array): x,y interpolation point
 
           Returns:
               float: Approximation
@@ -128,16 +128,16 @@ class Interpolation:
                 q[i, j] = (q[i, j-1] - q[i-1, j-1]) / (z[i]-z[i-j])
         return q, z
 
-    def hermite(self, x, y=None, yp=None, approx=None):
+    def hermite(self, x, approx, y=None, yp=None):
         """
           Gives approximation using Hermite polynomial with divided-difference coefficients.
           Requires equal-length x,y,yp arrays or just x array if f(x) is known and differentiable.
 
           Args:
               x (1D array): x,y interpolation point
+              approx (float): Value to approximate
               y (1D array): x,y interpolation point
               yp (1D array): First derivative y' evaluated at x
-              approx (float): Value to approximate
 
           Returns:
               float: Hermite approximate
