@@ -1,6 +1,9 @@
 venv/
-.venv/
 build/
 dist/
 nanalysis.egg-info/
-venv/Lib/site-packages/
+venv/bin
+venv/build
+venv/include
+venv/lib
+venv/local
