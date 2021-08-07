@@ -3,8 +3,4 @@ build/
 .venv/
 dist/
 nanalysis.egg-info/
-venv/bin/
-venv/build/
-venv/include/
-venv/Lib/
-venv/local/
+
