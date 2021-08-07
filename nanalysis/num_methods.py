@@ -210,7 +210,7 @@ class NumMethods:
                 approx += s1 + s2
             elif v8 >= n_0:
                 print("Level exceeded")
-                return None
+                return approx
             else:
                 i += 1
 
@@ -239,7 +239,7 @@ class NumMethods:
         """
           Two-point Gaussian quadrature formula for approximating int_(a,b)f(x)dx where
           [a,b] is a general interval. Derived from the approximation
-          int_(-1,1) f(x)dx (approximately) = f( -sqrt(3)/3 ) - f( sqrt(3)/3 )
+          int_(-1,1) f(x)dx (approximately)= f( -sqrt(3)/3 ) - f( sqrt(3)/3 )
 
           Args:
               a (float): Defines [a,b] integration bounds
