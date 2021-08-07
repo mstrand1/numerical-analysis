@@ -6,5 +6,6 @@ nanalysis.egg-info/
 venv/bin
 venv/build
 venv/include
-venv/lib
+venv/Lib
 venv/local
+venv/Lib/site-packages
