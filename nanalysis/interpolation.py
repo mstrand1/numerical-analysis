@@ -7,7 +7,7 @@ class Interpolation:
     Methods of approximation by different polynomial interpolants using either a known f(x)
     or a set of x,y values.
 
-        - Lagrange interpolation (with and w/o divided differences)
+        - Lagrange interpolation (with or w/o divided differences)
         - Hermite interpolation (by divided differences)
         - Cubic spline interpolation (Natural - satisfies S''(a) = S''(b) = 0)
         - Chebyshev polynomial approximation
@@ -44,7 +44,7 @@ class Interpolation:
             interp += y[i] * l[i]
         return interp
 
-    def dd_lagrange(self, x, y=None, approx=None):
+    def lagrange_dd(self, x, y=None, approx=None):
         """
           Approximation via Lagrange polynomial interpolation with divided-difference coefficients.
 
@@ -296,12 +296,12 @@ class Interpolation:
               ndarray: 1D array of coefficients to be used in polynomial approximation
         """
         f = self.func
-        trans = lambda a: f(np.cos(a))
+        var_trans = lambda a: f(np.cos(a))
         a = np.zeros(n+2)
-        a[1] = (1/np.pi) * NumMethods(trans).simp_comp(0, np.pi, 50)
+        a[1] = (1/np.pi) * NumMethods(var_trans).simp_comp(0, np.pi, 50)
         for i in range(1, n+1):
-            t_n = lambda x: (f(np.cos(x)) * np.cos(i*x))
-            a[i+1] = (2/np.pi) * NumMethods(t_n).simp_comp(0, np.pi, 50)
+            t_i = lambda x: (f(np.cos(x)) * np.cos(i*x))
+            a[i+1] = (2/np.pi) * NumMethods(t_i).simp_comp(0, np.pi, 50)
         return a[1:n+2]
 
     def chebyshev(self, approx, n=4):
@@ -318,6 +318,6 @@ class Interpolation:
         c = self.cheby_coeff(n)
         p = 0
         for i in range(n+1):
-            t_n = lambda a: np.cos(i * np.arccos(a))
-            p += c[i] * t_n(approx)
+            t_i = lambda a: np.cos(i * np.arccos(a))
+            p += c[i] * t_i(approx)
         return p
