@@ -10,3 +10,4 @@ venv/Lib/
 venv/local/
 venv/Lib/site-packages/
 site-packages/
+Lib/
