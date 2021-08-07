@@ -6,7 +6,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='nanalysis',
-    version='1.41',
+    version='1.5',
     packages=['nanalysis'],
     author='Michael Strand',
     author_email='mwstrand@uci.edu',

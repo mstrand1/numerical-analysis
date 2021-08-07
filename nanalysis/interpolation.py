@@ -28,7 +28,7 @@ class Interpolation:
 
           Returns:
               float: Approximation
-          """
+        """
         n = len(x)
         if y is None:
             y = np.zeros(n)
@@ -55,7 +55,7 @@ class Interpolation:
 
           Returns:
               float: Approximation
-          """
+        """
         n = len(x)
         if y is None:
             y = np.zeros(n)
@@ -81,7 +81,7 @@ class Interpolation:
           Returns:
               ndarray: 2D (n x n) array of divided-difference coefficients. ith column represents
               i-1th divided differences.
-          """
+        """
         n = len(x)
         dd = np.zeros((n, n))
         if y is None:
@@ -106,7 +106,7 @@ class Interpolation:
           Returns:
               ndarray: 2D (2n x 2n) array of divided-difference coefficients. ith column represents
               i-1th divided differences.
-          """
+        """
         n = len(x)
         z = np.zeros((2*n))
         q = np.zeros((2*n, 2*n))
@@ -141,7 +141,7 @@ class Interpolation:
 
           Returns:
               float: Hermite approximate
-          """
+        """
         hdd, z = self.hdiv_diff(x, y, yp)
         n = int(len(z)/2)
         hp = hdd[0, 0]
@@ -152,9 +152,10 @@ class Interpolation:
             hp += d * hdd[i, i]
         return hp
 
-    def spline_coeff(self, x, y=None):
+    def spline_nat_coeff(self, x, y=None):
         """
-          Construct cubic spline coefficients to approximate on appropriate interval(s).
+          Construct cubic spline coefficients with natural boundary condition S''(a) = 0 and S''(b) = 0
+          to approximate on appropriate interval(s).
           Ex: for x in [x(i-1), x(i)], spline S_i(x) = a_i + b_ix + c_ix^2 + d_ix^3
 
           Args:
@@ -163,26 +164,26 @@ class Interpolation:
 
           Returns:
               1D array: a, b, c, d are the spline coefficients: a + bx +cx^2 +dx^3
-          """
+        """
         n = len(x)
         a = np.zeros(n)
-        if not y:
+        if y is None:
             for i in range(n):
                 a[i] = self.func(x[i])
-        elif y:
+        else:
             a = y
-        h, alph, mu, l, z, c, b, d = np.zeros((8, n))
+        h, alpha, mu, l, z, c, b, d = np.zeros((8, n))
         for i in range(n-1):
             h[i] = x[i+1] - x[i]
         for i in range(1, n-1):
-            alph[i] = (3/h[i]) * (a[i+1] - a[i]) - (3/h[i-1]) * (a[i] - a[i-1])
+            alpha[i] = (3/h[i]) * (a[i+1] - a[i]) - (3/h[i-1]) * (a[i] - a[i-1])
         l[0] = 1
         mu[0] = 0
         z[0] = 0
         for i in range(1, n-1):
             l[i] = 2*(x[i+1] - x[i-1]) - h[i-1] * mu[i-1]
             mu[i] = h[i] / l[i]
-            z[i] = (alph[i] - h[i-1] * z[i-1]) / l[i]
+            z[i] = (alpha[i] - h[i-1] * z[i-1]) / l[i]
         l[n-1] = 1
         z[n-1] = 0
         c[n-1] = 0
@@ -196,20 +197,83 @@ class Interpolation:
         d = d[:n-1]
         return a, b, c, d
 
-    def cubic_spline(self, x, y=None, approx=None):
+    def spline_clamp_coeff(self, x, y=None, fpo=None, fpn=None):
         """
-          Construct cubic splines to approximate on appropriate interval(s).
+          Construct cubic spline coefficients with clamped boundary condition S'(a) = f'(a) and S'(b) = f'(b)
+          to approximate on appropriate interval(s).
+          Ex: for x in [x(i-1), x(i)], spline S_i(x) = a_i + b_ix + c_ix^2 + d_ix^3
 
           Args:
               x (1D array): x,y interpolation point
               y (1D array): x,y interpolation point
+              fpo (float): f'(a) aka f'(x_0)
+              fpn (float): f'(b) aka f'(x_n)
+
+          Returns:
+              1D array: a, b, c, d are the spline coefficients: a + bx +cx^2 +dx^3
+        """
+        n = len(x)
+        a = np.zeros(n)
+        if y is None:
+            for i in range(n):
+                a[i] = self.func(x[i])
+        if fpo is None and fpn is None:
+            fpo = NumMethods(self.func).mid_3diff(x[0])
+            fpn = NumMethods(self.func).mid_3diff(x[n-1])
+        else:
+            a = y
+        h, alpha, mu, l, z, c, b, d = np.zeros((8, n))
+        for i in range(n-1):
+            h[i] = x[i+1] - x[i]
+        alpha[0] = 3*(a[1] - a[0])/h[0] - 3*fpo
+        alpha[n-1] = 3*fpn - 3*(a[n-1] - a[n-2])/h[n-2]
+        for i in range(1, n-1):
+            alpha[i] = (3/h[i]) * (a[i+1] - a[i]) - (3/h[i-1]) * (a[i] - a[i-1])
+        l[0] = 2*h[0]
+        mu[0] = 0.5
+        z[0] = alpha[0]/l[0]
+        for i in range(1, n-1):
+            l[i] = 2*(x[i+1] - x[i-1]) - h[i-1] * mu[i-1]
+            mu[i] = h[i]/l[i]
+            z[i] = (alpha[i] - h[i-1] * z[i-1])/l[i]
+        l[n-1] = h[n-2] * (2 - mu[n-2])
+        z[n-1] = (alpha[n-1] - h[n-2] * z[n-2])/l[n-1]
+        c[n-1] = z[n-1]
+        for j in range(n-2, -1, -1):
+            c[j] = z[j] - mu[j] * c[j+1]
+            b[j] = ((a[j+1] - a[j])/h[j]) - (h[j]/3)*(c[j+1] + 2*c[j])
+            d[j] = (c[j+1] - c[j])/(3*h[j])
+        a = a[:n-1]
+        b = b[:n-1]
+        c = c[:n-1]
+        d = d[:n-1]
+        return a, b, c, d
+
+    def cubic_spline(self, x, approx, y=None, bound="natural", fpo=None, fpn=None):
+        """
+          Construct cubic splines to approximate on appropriate interval(s). Specify boundary conditions
+          natural or clamped.
+
+          Args:
+              x (1D array): x,y interpolation point
               approx (float or 1D array): Value(s) to approximate
+              y (1D array): x,y interpolation point
+              bound (str): Natural boundary - "natural"
+                           Clamp boundary - "clamp"
+              fpo (float): f'(a) aka f'(x_0)
+              fpn (float): f'(b) aka f'(x_n)
 
           Returns:
               ndarray: 1D array of approximations
-          """
+        """
         n = len(x)
-        a, b, c, d = self.spline_coeff(x, y)
+        if bound == "natural":
+            a, b, c, d = self.spline_nat_coeff(x, y)
+        elif bound == "clamp":
+            a, b, c, d = self.spline_clamp_coeff(x, y, fpo=fpo, fpn=fpn)
+        else:
+            print("Invalid boundary: use 'natural' or 'clamp'.")
+            return None
         if type(approx) == float:
             approx = [approx]
         m = len(approx)
@@ -230,14 +294,14 @@ class Interpolation:
 
           Returns:
               ndarray: 1D array of coefficients to be used in polynomial approximation
-          """
+        """
         f = self.func
-        bp = lambda a: f(np.cos(a))
+        trans = lambda a: f(np.cos(a))
         a = np.zeros(n+2)
-        a[1] = (1/np.pi) * NumMethods(bp).simp_comp(0, np.pi, 50)
+        a[1] = (1/np.pi) * NumMethods(trans).simp_comp(0, np.pi, 50)
         for i in range(1, n+1):
-            g = lambda x: (f(np.cos(x)) * np.cos(i*x))
-            a[i+1] = (2/np.pi) * NumMethods(g).simp_comp(0, np.pi, 50)
+            t_n = lambda x: (f(np.cos(x)) * np.cos(i*x))
+            a[i+1] = (2/np.pi) * NumMethods(t_n).simp_comp(0, np.pi, 50)
         return a[1:n+2]
 
     def chebyshev(self, approx, n=4):
@@ -250,10 +314,10 @@ class Interpolation:
 
           Returns:
               float: Approximation to f(x) at approx value
-          """
+        """
         c = self.cheby_coeff(n)
         p = 0
         for i in range(n+1):
-            t = lambda a: np.cos(i * np.arccos(a))
-            p += c[i] * t(approx)
+            t_n = lambda a: np.cos(i * np.arccos(a))
+            p += c[i] * t_n(approx)
         return p
