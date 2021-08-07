@@ -8,5 +8,5 @@ venv/build/
 venv/include/
 venv/Lib/
 venv/local/
-venv/Lib/site-packages
+venv/Lib/site-packages/
 site-packages/
