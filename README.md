@@ -1,4 +1,4 @@
-NumericalAnalysis
+Numerical Analysis
 
 The purpose of this repo is to get more familiar with Github and preserve the algorithms I wrote for my numerical analysis classes. 
 
