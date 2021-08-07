@@ -1,5 +1,6 @@
 venv/
 build/
+.venv/
 dist/
 nanalysis.egg-info/
 venv/bin
